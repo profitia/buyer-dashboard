@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS variables: light mode (default) ─────────────────────────── */
+:root {
+  --background: 248 250 252;   /* slate-50  */
+  --surface:    255 255 255;   /* white     */
+  --surface-2:  241 245 249;   /* slate-100 */
+  --border:     226 232 240;   /* slate-200 */
+  --fg:          15  23  42;   /* slate-900 */
+  --fg-soft:     71  85 105;   /* slate-600 */
+  --fg-muted:   148 163 184;   /* slate-400 */
+}
+
+/* ─── CSS variables: dark mode ─────────────────────────────────────── */
+html.dark {
+  --background:   2   6  23;   /* slate-950 */
+  --surface:     15  23  42;   /* slate-900 */
+  --surface-2:   30  41  59;   /* slate-800 */
+  --border:      30  41  59;   /* slate-800 */
+  --fg:         241 245 249;   /* slate-100 */
+  --fg-soft:    203 213 225;   /* slate-300 */
+  --fg-muted:   100 116 139;   /* slate-500 */
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: rgb(var(--background));
+    color: rgb(var(--fg));
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--fg-muted));
+  }
+}
+
+@layer components {
+  .glass-card {
+    background-color: rgb(var(--surface));
+    border: 1px solid rgb(var(--border));
+    border-radius: 0.75rem;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg
+           transition-all duration-150 active:scale-95
+           disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-ghost {
+    @apply px-3 py-1.5 rounded-lg transition-all duration-150 text-sm font-medium;
+    color: rgb(var(--fg-soft));
+  }
+
+  .btn-ghost:hover {
+    color: rgb(var(--fg));
+    background-color: rgb(var(--surface-2));
+  }
+
+  .input-base {
+    @apply rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500
+           focus:border-transparent transition-all duration-150 w-full;
+    background-color: rgb(var(--surface-2));
+    border: 1px solid rgb(var(--border));
+    color: rgb(var(--fg));
+  }
+
+  .input-base::placeholder {
+    color: rgb(var(--fg-muted));
+  }
+
+  .tag-insight {
+    @apply bg-blue-500/10 border border-blue-500/30 text-blue-500 dark:text-blue-300
+           rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  .tag-suggestion {
+    @apply bg-violet-500/10 border border-violet-500/30 text-violet-500 dark:text-violet-300
+           rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+}
+
+/* ─── Animations ────────────────────────────────────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.25s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.recharts-default-tooltip {
+  background-color: rgb(var(--surface)) !important;
+  border: 1px solid rgb(var(--border)) !important;
+  border-radius: 8px !important;
+  color: rgb(var(--fg)) !important;
+}
+

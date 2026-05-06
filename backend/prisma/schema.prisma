@@ -1,0 +1,79 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SavedCategory {
+  id               String   @id @default(cuid())
+  name             String
+  steelWeight      Float    @default(40)
+  aluminumWeight   Float    @default(30)
+  transportWeight  Float    @default(20)
+  energyWeight     Float    @default(10)
+  basePrice        Float    @default(1000)
+  supplierPrices   Json     @default("[]")
+  timeRange        String   @default("3Y")
+  template         String   @default("custom")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("saved_categories")
+}
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  title     String        @default("New conversation")
+  language  String        @default("pl")
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String      // 'user' | 'assistant'
+  content   String      @db.Text
+  createdAt DateTime    @default(now())
+
+  @@map("chat_messages")
+}
+
+model SavedView {
+  id        String   @id @default(cuid())
+  name      String
+  filters   Json
+  userId    String   @default("default")
+  createdAt DateTime @default(now())
+
+  @@map("saved_views")
+}
+
+model MacroHistoricalEvent {
+  id         String   @id @default(cuid())
+  seriesId   String   // e.g. CPIAUCSL
+  name       String   // e.g. "CPI"
+  date       DateTime
+  value      Float
+  prevValue  Float?
+  changePct  Float?
+  type       String   // "spike" | "trend" | "drop"
+  impact     String   // "high" | "medium" | "low"
+  affects    Json     // string[]  e.g. ["energy","transport"]
+  createdAt  DateTime @default(now())
+
+  @@unique([seriesId, date])
+  @@index([date])
+  @@index([seriesId])
+  @@map("macro_historical_events")
+}
