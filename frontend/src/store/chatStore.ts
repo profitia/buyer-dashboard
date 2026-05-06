@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { nanoid } from './nanoid';
 import type { Message, MessageType, Language, ChatRequest, ChatSessionMeta } from '../../../shared/types';
+import { API_BASE } from '../lib/api';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -93,7 +94,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         categoryId,
       };
 
-      const res = await fetch('/api/chat', {
+      const res = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -148,7 +149,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   loadSession: async (sessionId) => {
     set({ isLoading: true });
     try {
-      const res = await fetch(`/api/sessions/${sessionId}/messages`);
+      const res = await fetch(`${API_BASE}/api/sessions/${sessionId}/messages`);
       if (!res.ok) throw new Error('Failed to load session');
       const data = await res.json() as { messages: Array<{ id: string; role: string; content: string; createdAt: string }> };
 
@@ -169,7 +170,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   fetchSessions: async () => {
     try {
-      const res = await fetch('/api/sessions');
+      const res = await fetch(`${API_BASE}/api/sessions`);
       if (!res.ok) return;
       const data = await res.json() as { sessions: Array<{ id: string; title: string; createdAt: string; updatedAt: string; messageCount: number }> };
       const sessions: ChatSessionMeta[] = data.sessions.map((s) => ({
@@ -186,7 +187,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   deleteSession: async (sessionId) => {
     try {
-      await fetch(`/api/sessions/${sessionId}`, { method: 'DELETE' });
+      await fetch(`${API_BASE}/api/sessions/${sessionId}`, { method: 'DELETE' });
       set((state) => ({
         sessions: state.sessions.filter((s) => s.id !== sessionId),
         // If deleted active session, start fresh

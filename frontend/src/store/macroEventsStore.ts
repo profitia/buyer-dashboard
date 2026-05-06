@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { MacroEvent, HistoricalMacroEvent } from '../../../shared/types';
+import { API_BASE } from '../lib/api';
 
 interface MacroEventsState {
   events: MacroEvent[];
@@ -27,7 +28,7 @@ export const useMacroEventsStore = create<MacroEventsState>((set) => ({
   fetchEvents: async (lang = 'pl') => {
     set({ isLoading: true, error: null });
     try {
-      const res = await fetch(`/api/macro-events?lang=${lang}`);
+      const res = await fetch(`${API_BASE}/api/macro-events?lang=${lang}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: MacroEvent[] = await res.json();
       set({ events: data, isLoading: false });
@@ -43,7 +44,7 @@ export const useMacroEventsStore = create<MacroEventsState>((set) => ({
       if (category) params.set('category', category);
       // Fetch last 3 years of events for chart
       params.set('from', new Date(Date.now() - 3 * 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10));
-      const res = await fetch(`/api/events?${params.toString()}`);
+      const res = await fetch(`${API_BASE}/api/events?${params.toString()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: HistoricalMacroEvent[] = await res.json();
       set({ chartEvents: data, chartEventsLoading: false });

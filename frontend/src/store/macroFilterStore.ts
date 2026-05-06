@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { API_BASE } from '../lib/api';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -143,7 +144,7 @@ export const useMacroFilterStore = create<MacroFilterStoreState>((set, get) => (
 
   fetchViews: async () => {
     try {
-      const res = await fetch('/api/views');
+      const res = await fetch(`${API_BASE}/api/views`);
       if (!res.ok) return;
       const data: SavedView[] = await res.json();
       set({ savedViews: data });
@@ -155,7 +156,7 @@ export const useMacroFilterStore = create<MacroFilterStoreState>((set, get) => (
   saveView: async (name) => {
     const { filters, fetchViews } = get();
     try {
-      const res = await fetch('/api/views', {
+      const res = await fetch(`${API_BASE}/api/views`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, filters }),
